@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import './App.css';
-import { Layout, Statistic, Card, Row, Col, Button, Table, Spin, Tag } from 'antd';
+import { Layout, Statistic, Card, Row, Col, Button, Table, Spin, Tag, notification } from 'antd';
 import ReactFileReader from 'react-file-reader';
 import { apiFetch } from '../controller/helpers'
 import 'whatwg-fetch'
 
-const { Header, Content, Footer } = Layout;
+const { Content } = Layout;
+
 class HealthCheck extends Component {
     constructor(props) {
         super(props)
@@ -44,9 +45,41 @@ class HealthCheck extends Component {
                 resSumamry: res.data.summary,
                 loading: false
             })
+            this.fetchReportApi()
         })
 
     }
+
+    fetchReportApi = () => {
+        this.setState({ loading: true })
+        apiFetch({
+            url: 'http://localhost:3001/api/report',
+            method: 'POST',
+            body: {
+                token: window.sessionStorage.getItem('accessToken'),
+                summary: this.state.resSumamry
+            }
+        }).then(res => {
+            if (res.success) {
+                this.openNotificationWithIcon('success')
+            } else {
+                this.openNotificationWithIcon('error')
+            }
+            this.setState({ loading: false })
+        })
+
+    }
+
+    openNotificationWithIcon = type => {
+        let message = ''
+        if (type === 'success') {
+            message = 'Send Healcheck Report API Success'
+        }
+        else { message = 'Send Healcheck Report API Error' }
+        notification[type]({
+            message: message,
+        });
+    };
 
     render() {
         const { state } = this
@@ -73,7 +106,7 @@ class HealthCheck extends Component {
                 key: 'durationNano',
                 width: '30%',
                 align: 'center',
-                render: text => (text ? text.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") :''),
+                render: text => (text ? text.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ''),
             }
         ];
 
@@ -86,7 +119,8 @@ class HealthCheck extends Component {
                             <Row>
 
                                 <Col span={16} offset={4}>
-                                    <Card title="Health Check" bordered={false} >
+                                    <Card title="Health Check" bordered={false}
+                                        style={{ borderRadius: '5px' }}>
                                         <ReactFileReader
                                             fileTypes={[".csv"]}
                                             base64={true}
@@ -119,24 +153,24 @@ class HealthCheck extends Component {
                                             style={{ marginTop: 20 }}
                                         >
                                             <Col sm={5}>
-                                                <Card style={{ width: '100%' }}>
+                                                <Card style={{ width: '100%', borderRadius: '5px' }}>
                                                     <Statistic title="Total Website" value={state.resSumamry.total_websites} />
                                                 </Card>
                                             </Col>
                                             <Col sm={5}>
-                                                <Card style={{ width: '100%' }}>
+                                                <Card style={{ width: '100%', borderRadius: '5px' }}>
 
                                                     <Statistic title="Successful" value={state.resSumamry.success} />
                                                 </Card>
                                             </Col>
                                             <Col sm={5}>
-                                                <Card style={{ width: '100%' }}>
+                                                <Card style={{ width: '100%', borderRadius: '5px' }}>
 
                                                     <Statistic title="Failure" value={state.resSumamry.failure} />
                                                 </Card>
                                             </Col>
                                             <Col sm={9}>
-                                                <Card style={{ width: '100%' }}>
+                                                <Card style={{ width: '100%', borderRadius: '5px' }}>
                                                     <Statistic title="Total times (unix nano)" value={state.resSumamry.total_time} />
                                                 </Card>
                                             </Col>

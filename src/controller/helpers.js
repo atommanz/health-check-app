@@ -1,9 +1,9 @@
 import 'whatwg-fetch'
 
 export const apiFetch = async ({
-  url, query, method, body, contentType
+  url, query, method, body, contentType, headers
 }) => {
-  const headers = { 'Content-Type': contentType || 'application/json' }
+  headers = { ...headers, 'Content-Type': contentType || 'application/json' }
   const res = await fetch(`${url}`, {
     method: method || 'GET',
     headers,
@@ -11,7 +11,6 @@ export const apiFetch = async ({
       new URLSearchParams(body) :
       (JSON.stringify(body))),
   })
-  // console.log(res)
   const json = await res.json()
 
   // console.log(json)
