@@ -98,6 +98,7 @@ class HealthCheck extends Component {
                 key: 'alive',
                 width: '10%',
                 align: 'center',
+                sorter: (a, b) => a.alive - b.alive,
                 render: text => (text ? <Tag color="#87d068">Pass</Tag> : <Tag color="#f50">Fail</Tag>),
             },
             {
@@ -118,7 +119,7 @@ class HealthCheck extends Component {
                         <Spin spinning={state.loading}>
                             <Row>
 
-                                <Col span={16} offset={4}>
+                                <Col span={18} offset={3}>
                                     <Card title="Health Check" bordered={false}
                                         style={{ borderRadius: '5px' }}>
                                         <ReactFileReader
