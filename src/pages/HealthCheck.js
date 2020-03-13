@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
-import { Layout, Statistic, Card, Row, Col, Button, Table, Spin ,Tag } from 'antd';
+import { Layout, Statistic, Card, Row, Col, Button, Table, Spin, Tag } from 'antd';
 import ReactFileReader from 'react-file-reader';
 import { apiFetch } from '../controller/helpers'
 import 'whatwg-fetch'
@@ -72,7 +72,8 @@ class HealthCheck extends Component {
                 dataIndex: 'durationNano',
                 key: 'durationNano',
                 width: '30%',
-                align: 'center'
+                align: 'center',
+                render: text => (text ? text.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") :''),
             }
         ];
 
@@ -84,9 +85,7 @@ class HealthCheck extends Component {
                         <Spin spinning={state.loading}>
                             <Row>
 
-                                <Col span={16} offset={4}
-                                // style={{ backgroundColor: '#fff' }}
-                                >
+                                <Col span={16} offset={4}>
                                     <Card title="Health Check" bordered={false} >
                                         <ReactFileReader
                                             fileTypes={[".csv"]}
@@ -106,11 +105,11 @@ class HealthCheck extends Component {
                                                 Click to upload .csv file
                                             </Button>
                                         </ReactFileReader>
-                                        <p>{this.state.fileName}</p>
+                                        <p>{state.fileName}</p>
                                         <Button
                                             type="primary"
                                             style={{ width: '100%' }}
-                                            disabled={this.state.listUrl.length === 0}
+                                            disabled={state.listUrl.length === 0}
                                             onClick={e => {
 
                                                 this.fetchCheck()
@@ -142,10 +141,10 @@ class HealthCheck extends Component {
                                                 </Card>
                                             </Col>
                                         </Row>
-                                        <Row style={{marginTop : 20}}>
+                                        <Row style={{ marginTop: 20 }}>
                                             <Table
                                                 style={{ width: '100%' }}
-                                                dataSource={this.state.resListUrl}
+                                                dataSource={state.resListUrl}
                                                 columns={columns} />
                                         </Row>
                                     </Card>
