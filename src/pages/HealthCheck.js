@@ -107,6 +107,7 @@ class HealthCheck extends Component {
                 key: 'durationNano',
                 width: '30%',
                 align: 'center',
+                sorter: (a, b) => a.durationNano - b.durationNano,
                 render: text => (text ? text.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ''),
             }
         ];
